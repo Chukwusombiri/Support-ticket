@@ -9,8 +9,8 @@ const profileRoutes = require('./routes/ProfileRoutes');
 const ticketRoutes = require('./routes/TicketRoutes');
 
 const PORT = process.env.APP_PORT
+const frontend = process.env.CORS_ORIGIN
 const cors = require("cors");
-const { build } = require('joi');
 
 // intialize express
 const app = express();
@@ -23,7 +23,7 @@ const app = express();
 })()
 
 //general middlewares
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: frontend, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,15 +32,19 @@ app.use('/api', authRoutes);
 app.use('/api/profile', profileRoutes)
 app.use('/api/tickets', ticketRoutes);
 
+app.get('/', (_, res) =>
+  res.json({ message: 'Support Desk API running successfully' })
+);
+
 
 //serve static app frontend
-if (process.env.APP_ENV == 'production') {
+/* if (process.env.APP_ENV == 'production') {
     app.use(express.static(path.join(__dirname, '../frontend/build')))
 
-    // entry point
+    
     app.get('*', (req, res) => res.sendFile(__dirname, '../', 'frontend', 'build', 'index.html'))
 } else {
     app.get('/', (req, res) => res.status(200).json({ message: "Welcome to Support Desk API" }))
-}
+} */
 // error handle
 app.use(errorHandler)
