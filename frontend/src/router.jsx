@@ -8,6 +8,7 @@ import PrivateRoute from "./accessibility/PrivateRoute";
 import GuestRoute from "./accessibility/GuestRoute";
 import AllTickets from "./pages/AllTickets";
 import SingleTicket from "./pages/SingleTicket";
+import EditTicket from "./pages/EditTicket";
 
 const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
             {
                 path: '/tickets/:id',
                 element: <PrivateRoute><SingleTicket /></PrivateRoute>
+            },
+            {
+                path: '/tickets/:id/edit',
+                element: <PrivateRoute><EditTicket /></PrivateRoute>
             }
         ]
     }

@@ -1,18 +1,20 @@
 import React from 'react'
-import { closeTicket, getTicket, reset } from '../features/ticket/ticketSlice';
+import { closeTicket, deleteTicket, getTicket, reset } from '../features/ticket/ticketSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Loader from '../components/Loader';
 import BreadCrumb from '../components/BreadCrumb';
 import SectionHeader from '../components/SectionHeader';
 import { toast } from 'react-toastify';
+import Notes from '../components/Notes';
 
 export default function SingleTicket() {
     const { ticket, isLoading, isError, message } = useSelector((state) => state.tickets)
-    const { authUser } = useSelector((state) => state.auth);
+    const { authUser } = useSelector((state) => state.auth);    
     const { _id, product, description, status, createdAt, updatedAt } = ticket || {};
     const dispatch = useDispatch();
     const { id } = useParams();
+    const navigate = useNavigate();
     let statusClass;
     switch (status) {
         case 'open':
@@ -41,10 +43,16 @@ export default function SingleTicket() {
     }, []);
 
     // handle close ticket
-    const handleCloseTicket = () => {
-        console.log('close ticket');
+    const handleCloseTicket = () => {       
         // dispatch close ticket action
         dispatch(closeTicket(id));
+    }
+
+    // delete a ticket
+    const handleDelete = async () => {
+        dispatch(deleteTicket(_id)); 
+        toast.success("Ticket deleted")    
+        navigate('/tickets');   
     }
 
     if (isLoading) {
@@ -90,14 +98,11 @@ export default function SingleTicket() {
                     </div>
                     <div className="flex items-center gap-4 flex-wrap">
                         {status !== 'closed' && <button onClick={handleCloseTicket} type='button' className="px-5 py-2 rounded-md text-xs roboto-bold text-gray-50 capitalize bg-gray-900 hover:bg-gray-700 transition-colors duration-300 ease-in-out">close ticket</button>}
-                        <button type='button' className="px-5 py-2 rounded-md text-xs roboto-bold text-gray-50 capitalize bg-blue-600 hover:bg-blue-700 transition-colors duration-300 ease-in-out">edit ticket</button>
-                        <button type='button' className="px-5 py-2 rounded-md text-xs roboto-bold text-gray-50 capitalize bg-red-600 hover:bg-red-700 transition-colors duration-300 ease-in-out">delete ticket</button>
+                        <Link to={`/tickets/${_id}/edit`}><button type='button' className="px-5 py-2 rounded-md text-xs roboto-bold text-gray-50 capitalize bg-blue-600 hover:bg-blue-700 transition-colors duration-300 ease-in-out">edit ticket</button></Link>
+                        <button onClick={handleDelete} type='button' className="px-5 py-2 rounded-md text-xs roboto-bold text-gray-50 capitalize bg-red-600 hover:bg-red-700 transition-colors duration-300 ease-in-out">delete ticket</button>
                     </div>
                     {/* comments section can go here in future */}
-                    <div className="pt-4 border-t border-gray-200">
-                        <h3 className='text-lg roboto-semibold text-gray-800 mb-4'>Comments</h3>
-                        <p className='text-gray-600'>No comments yet.</p>
-                    </div>
+                    <Notes ticket={ticket}/>
                 </div>
             </div>
         </section>

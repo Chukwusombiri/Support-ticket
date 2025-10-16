@@ -8,6 +8,9 @@ const {
 } = require('../controllers/TicketController');
 const authProtect = require('../middlewares/AuthMiddleware');
 const { validateTicket, validateObjectId } = require('../middlewares/validationMiddleware');
+const noteRoutes = require('./NoteRoutes')
+
+router.use('/:ticketId/notes', noteRoutes)
 
 // Create a new ticket
 router.post('/', authProtect, validateTicket, createTicket);
