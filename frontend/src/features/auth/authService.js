@@ -1,6 +1,7 @@
 import api from '../../utilities/api';
 
 const authService = {
+    // Register user
     register: async (userData) => {
         const response = await api.post('/register', userData); 
         const {data} = response; 
@@ -11,6 +12,7 @@ const authService = {
         return data;
     },
 
+    // Login user
     login: async (userData) => {
         const response = await api.post('/login', userData);
         const data = response.data; 
@@ -18,6 +20,7 @@ const authService = {
         return data;
     },
 
+    // Logout user
     logout: () => {
         localStorage.removeItem('authUser');
     }

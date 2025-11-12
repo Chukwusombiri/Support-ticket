@@ -22,10 +22,9 @@ export default function Register() {
         password: '',
         passwordRepeat: ''
     })
-    const [showPassword, setShowPassword] = useState(false);
-    
-    console.log(import.meta.env.VITE_API_URL);
+    const [showPassword, setShowPassword] = useState(false);    
 
+    // side effects
     useEffect(() => {
         if (isError) {
             toast.error(message)
@@ -33,10 +32,11 @@ export default function Register() {
 
         if (isSuccess) {
             toast.success('Registered successfully')
-            dispatch(reset());            
+            dispatch(reset());                      
         }       
     }, [isError, isSuccess, message, dispatch, reset])
 
+    // handle input change
     const handleChange = (evt) => {
         const field = evt.target.name;
         const value = evt.target.value;
@@ -44,6 +44,7 @@ export default function Register() {
         setFormData(prev => ({ ...prev, [field]: value }));
     }
 
+    // submit registration
     const registerUser = (evt) => {
         evt.preventDefault();
 

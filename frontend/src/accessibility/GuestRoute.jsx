@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 
 export default function GuestRoute({ children }) {
-    const {authUser} = useSelector((state) => state.auth)
+    const { authUser } = useSelector((state) => state.auth)    
 
-    if(authUser) {
+    if (!!authUser) {
         return <Navigate to='/' />
-    }
+    }   
 
     return (
         <div>
