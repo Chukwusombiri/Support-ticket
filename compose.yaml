@@ -15,7 +15,7 @@ services:
           path: ./backend/          # your backend source directory
           target: .                  
         - action: rebuild
-          path: ./package.json
+          path: ./backend/package.json
     environment:
       NODE_ENV: production
       # ✅ connect with app-level credentials
@@ -42,7 +42,7 @@ services:
           path: frontend
           target: .    
         - action: rebuild
-          path: ./package-*.json
+          path: ./frontend/package.json
     environment:
       VITE_API_URL: http://localhost:5000/api
     depends_on:
