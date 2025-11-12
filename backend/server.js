@@ -38,7 +38,7 @@ app.get('/', (_, res) =>
 
 
 //serve static app frontend
-/* if (process.env.APP_ENV == 'production') {
+/* if (process.env.NODE_ENV == 'production') {
     app.use(express.static(path.join(__dirname, '../frontend/build')))
 
     

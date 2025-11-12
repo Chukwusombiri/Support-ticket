@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+# check=skip=all;error=false
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY ./package*.json ./
+
+RUN npm ci --only=production
+
+COPY --link --exclude=*.md . .
+
+EXPOSE 5000
+
+CMD ["node", "./backend/server.js"]

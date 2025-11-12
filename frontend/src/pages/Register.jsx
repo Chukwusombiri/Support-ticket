@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import { register, reset } from '../features/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
+
 export default function Register() {
     const dispatch = useDispatch();    
     const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth)
@@ -22,6 +23,8 @@ export default function Register() {
         passwordRepeat: ''
     })
     const [showPassword, setShowPassword] = useState(false);
+    
+    console.log(import.meta.env.VITE_API_URL);
 
     useEffect(() => {
         if (isError) {
