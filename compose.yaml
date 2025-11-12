@@ -6,17 +6,14 @@ services:
   backend:
     container_name: supportdesk-backend
     build:
-      context: .
+      context: backend
     ports:
       - "5000:5000"
     develop:
       watch:
-        - action: rebuild
-          path: .          # your backend source directory
-          target: .
-          ignore:
-            - node_modules/
-            - frontend/
+        - action: sync
+          path: ./backend/          # your backend source directory
+          target: .                  
         - action: rebuild
           path: ./package.json
     environment:
@@ -34,18 +31,18 @@ services:
   frontend:
     container_name: supportdesk-frontend
     build:
-      context: ./frontend
+      context: frontend
       args:
         VITE_API_URL: http://localhost:5000/api
     ports:
       - "3000:80"
     develop:
       watch:
-        - action: rebuild
-          path: ./frontend
+        - action: sync
+          path: frontend
           target: .    
-        - action: restart
-          path: ./frontend/package-*.json
+        - action: rebuild
+          path: ./package-*.json
     environment:
       VITE_API_URL: http://localhost:5000/api
     depends_on:
