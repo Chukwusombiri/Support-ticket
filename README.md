@@ -23,6 +23,9 @@ Built with the **MERN stack** and designed to highlight best practices in authen
 - ✅ Data validation using Joi + Mongoose schema rules
 - ⚠️ Centralized error handling middleware
 - 🧰 Additional utils and middlewares for logging & security
+  
+**Containerization:**
+- 🪣 Docker
 
 ---
 
@@ -104,6 +107,105 @@ cd frontend
 npm run dev
 ```
 
+
+## 🧰 Getting Started with Containerization (Docker)
+
+This project uses **Docker** and **Docker Compose** to containerize the entire Support Desk application — including the **Laravel backend**, **React frontend**, and **MongoDB database** — for a consistent, production-like development environment.
+
+### ⚙️ Prerequisites
+Make sure you have the following installed:
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+You can verify your setup by running:
+```bash
+docker --version
+docker compose version
+```
+
+### 🧩 Environment Overview
+The compose.yaml file defines three main services:
+
+- backend → Node API container (Node.js runtime)
+- frontend → React build served via Nginx
+- db → MongoDB service with a production-level application user automatically created via mongo-init.js in the project root.
+
+To use the root user instead, remove the second volume entry (for mongo-init.js) in the db service.
+Then, update the connection string to use the MONGO_INITDB_ROOT_USER and MONGO_INITDB_ROOT_PASSWORD environment variables instead of app_user and app_password:
+
+mongodb://app_user:app_password@db:27017/support_desk?authSource=support_desk
+
+Replace authSource=support_desk with authSource=admin wherever this string is used — including the backend’s MONGO_URL environment variable.
+
+
+These services are connected through a shared bridge network called supportdesk-network.
+
+### 🚀 Running the App
+From the root of the project, run:
+docker compose up --build
+
+This will:
+
+- Build images for both backend and frontend.
+- Create and start the MongoDB service.
+- Launch all containers and expose the following ports:
+
+
+- *Frontend: http://localhost:3000*
+- *Backend API: http://localhost:5000*
+- *MongoDB: localhost:27017 (internal network access only)*
+
+
+Once up, your app should be accessible via the browser at:
+http://localhost:3000
+
+### 🔄 Live Code Updates (Optional)
+To enable hot-reloading during development, the Compose file includes the develop specification to watch certain directories and sync changes into running containers:
+develop:
+  watch:
+    - action: sync
+      path: .
+      target: /app
+      ignore:
+        - node_modules/
+        - dist/
+
+
+**📝 You can exclude folders like node_modules, vendor, or build directories to prevent unnecessary reloads.**
+
+### 🧰 Common Commands
+- Stop all running containers:
+docker compose down
+
+- Rebuild and restart containers after code changes:
+docker compose up --build
+
+- Live Code Updates:
+docker compose build --watch
+
+- View logs for a specific service:
+docker compose logs backend
+
+- Open a shell inside a container:
+docker exec -it supportdesk-backend sh
+
+
+### 🛠️ Database GUI Access
+
+You can connect to the MongoDB container using tools like MongoDB Compass or Atlas CLI.
+- Host: localhost
+- Port: 27017
+- Username/Password: as configured in your .env or docker-compose.yml.
+
+
+### 🧱 Production Notes
+
+For production builds:
+- Use npm run build to generate optimized frontend assets.
+- Serve the React build from an Nginx static block.
+- Disable watch mode and mount volumes as read-only for better security.
+
+
 ## 🏗️ Project Architecture
 ```bash
 Support-ticket/
@@ -114,7 +216,10 @@ Support-ticket/
 │   ├── models/
 │   ├── middleware/
 │   ├── config/
-│   └── server.js
+│   ├── server.js
+│   ├── dockerfile
+│   ├── .env.example
+│   └── package.json
 │
 ├── frontend/            # React + Redux + Tailwind
 │   ├── public       
@@ -123,10 +228,13 @@ Support-ticket/
 │   │   ├── components/
 │   │   ├── pages/
 │   │   └── store.js
-│   ├──package.json
+│   ├── package.json
+│   ├── dockerfile
+│   ├── nginx.conf
+│   ├── .env.example
 │   └── vite.config.js
 │
-├── .env.example
-├── package.json
+├── compose.yaml
+├── mongo-init.js
 └── README.md
 ```
